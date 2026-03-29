@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Travel Globe</title>
+  <style>
+    :root {
+      --bg-1: #030712;
+      --bg-2: #08101d;
+      --panel: rgba(10, 16, 28, 0.86);
+      --panel-border: rgba(255, 255, 255, 0.12);
+      --text: #f5f7fb;
+      --muted: #9fb0c9;
+      --accent: #ff9f43;
+      --accent-soft: rgba(255, 159, 67, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(57, 91, 160, 0.2), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(255, 159, 67, 0.08), transparent 22%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1));
+      color: var(--text);
+    }
+
+    #globeViz {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: min(340px, calc(100vw - 40px));
+      padding: 18px;
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      z-index: 10;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .intro {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .card-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .location-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .location-button {
+      border: 1px solid rgba(255, 159, 67, 0.24);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: var(--accent-soft);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .location-button:hover {
+      background: rgba(255, 159, 67, 0.28);
+      transform: translateY(-1px);
+    }
+
+    .hint {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 700px) {
+      .overlay {
+        top: auto;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        width: auto;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/globe.gl"></script>
+</head>
+<body>
+  <div id="globeViz"></div>
+
+  <aside class="overlay">
+    <p class="eyebrow">Personal Travel Map</p>
+    <h1>Places I Want to Remember</h1>
+    <p class="intro">
+      Drag to explore the globe. Hover a point to see a quick tooltip, or click a point to focus it and show details here.
+    </p>
+
+    <section class="card">
+      <p class="card-label">Selected Location</p>
+      <h2 id="locationName">Choose a place</h2>
+      <p id="locationDescription">Click a point on the globe to show its description.</p>
+    </section>
+
+    <div id="locationList" class="location-list"></div>
+
+    <p class="hint">
+      Edit the <code>locations</code> array in the JavaScript below to add, remove, or update places later.
+    </p>
+  </aside>
+
+  <script>
+    // Edit this array to manage your travel locations.
+    // Add more places by copying one object and changing the values.
+    const locations = [
+      {
+        name: "Vienna, Austria",
+        lat: 48.2082,
+        lng: 16.3738,
+        description: "A winter trip for music, cafes, and New Year lights."
+      },
+      {
+        name: "Bangkok, Thailand",
+        lat: 13.7563,
+        lng: 100.5018,
+        description: "A favorite stop for night markets, temples, and street food."
+      },
+      {
+        name: "Reykjavik, Iceland",
+        lat: 64.1466,
+        lng: -21.9426,
+        description: "A dream destination for cold air, lava landscapes, and northern lights."
+      },
+      {
+        name: "Kyoto, Japan",
+        lat: 35.0116,
+        lng: 135.7681,
+        description: "A peaceful city with shrines, gardens, and beautiful seasonal colors."
+      }
+    ];
+
+    const globeContainer = document.getElementById("globeViz");
+    const locationName = document.getElementById("locationName");
+    const locationDescription = document.getElementById("locationDescription");
+    const locationList = document.getElementById("locationList");
+
+    function showLocationInfo(location) {
+      locationName.textContent = location.name;
+      locationDescription.textContent = location.description;
+    }
+
+    function focusLocation(location) {
+      showLocationInfo(location);
+      globe.pointOfView(
+        { lat: location.lat, lng: location.lng, altitude: 1.8 },
+        1200
+      );
+    }
+
+    function createLocationButtons() {
+      locations.forEach((location) => {
+        const button = document.createElement("button");
+        button.className = "location-button";
+        button.textContent = location.name;
+        button.addEventListener("click", () => focusLocation(location));
+        locationList.appendChild(button);
+      });
+    }
+
+    const globe = new Globe(globeContainer)
+      .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-dark.jpg")
+      .backgroundColor("#030712")
+      .showAtmosphere(true)
+      .atmosphereColor("#4ea1ff")
+      .atmosphereAltitude(0.14)
+      .pointsData(locations)
+      .pointLat("lat")
+      .pointLng("lng")
+      .pointAltitude(0.03)
+      .pointRadius(0.35)
+      .pointColor(() => "#ff9f43")
+      .pointLabel((location) => `
+        <div style="padding: 6px 8px;">
+          <strong>${location.name}</strong><br>
+          <span>${location.description}</span>
+        </div>
+      `)
+      .onPointClick((location) => {
+        focusLocation(location);
+      });
+
+    globe.pointOfView({ lat: 20, lng: 10, altitude: 2.3 });
+
+    const controls = globe.controls();
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.5;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+
+    createLocationButtons();
+    showLocationInfo(locations[0]);
+
+    window.addEventListener("resize", () => {
+      globe.width(window.innerWidth).height(window.innerHeight);
+    });
+  </script>
+</body>
+</html>
