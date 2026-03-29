@@ -130,6 +130,53 @@
       line-height: 1.5;
     }
 
+    .trip-section {
+      margin-bottom: 14px;
+    }
+
+    .trip-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .trip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .trip-button {
+      border: 1px solid var(--panel-border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .trip-button:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+
+    .trip-button.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    .trip-meta {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     @media (max-width: 700px) {
       .overlay {
         top: auto;
@@ -156,8 +203,13 @@
       轉動地球，找找我們曾留下足跡的角落。移到標記點可以看到提示，點一下就能重回那段時光。
     </p>
 
+    <div class="trip-section">
+      <p class="trip-label" id="tripGroupLabel">旅程</p>
+      <div id="tripList" class="trip-list" role="group" aria-labelledby="tripGroupLabel"></div>
+    </div>
+
     <section class="card">
-      <p class="card-label">這一刻的回憶</p>
+      <p class="card-label" id="tripTag">這一刻的回憶</p>
       <h2 id="locationName">點一個地方，想起那時的我們</h2>
       <p id="locationDescription">點一下地圖，看看我們當時的故事。</p>
     </section>
@@ -166,6 +218,22 @@
   </aside>
 
   <script>
+    // Trips data – each trip groups related locations together.
+    const trips = [
+      {
+        id: "europe-winter",
+        title: "歐洲冬日之旅",
+        dateRange: "2023.12 – 2024.01",
+        description: "在冰雪與音樂之間，感受歐洲的冬日魔法。"
+      },
+      {
+        id: "asia-spring",
+        title: "亞洲春日漫遊",
+        dateRange: "2024.03",
+        description: "穿梭於寺廟與街巷，品嚐亞洲的春日氣息。"
+      }
+    ];
+
     // Edit this array to manage your travel locations.
     // Add more places by copying one object and changing the values.
     const locations = [
@@ -173,25 +241,29 @@
         name: "奧地利・維也納",
         lat: 48.2082,
         lng: 16.3738,
-        description: "在音樂、咖啡館與跨年燈火中度過的冬日旅程。"
+        description: "在音樂、咖啡館與跨年燈火中度過的冬日旅程。",
+        tripId: "europe-winter"
       },
       {
         name: "泰國・曼谷",
         lat: 13.7563,
         lng: 100.5018,
-        description: "最愛的停留之地，有夜市、寺廟與滿街的美食香氣。"
+        description: "最愛的停留之地，有夜市、寺廟與滿街的美食香氣。",
+        tripId: "asia-spring"
       },
       {
         name: "冰島・雷克雅維克",
         lat: 64.1466,
         lng: -21.9426,
-        description: "夢想中的目的地，冷冽空氣、熔岩地景與神秘的極光。"
+        description: "夢想中的目的地，冷冽空氣、熔岩地景與神秘的極光。",
+        tripId: "europe-winter"
       },
       {
         name: "日本・京都",
         lat: 35.0116,
         lng: 135.7681,
-        description: "一座寧靜的城市，有神社、庭園與美麗的四季色彩。"
+        description: "一座寧靜的城市，有神社、庭園與美麗的四季色彩。",
+        tripId: "asia-spring"
       }
     ];
 
@@ -199,10 +271,25 @@
     const locationName = document.getElementById("locationName");
     const locationDescription = document.getElementById("locationDescription");
     const locationList = document.getElementById("locationList");
+    const tripListEl = document.getElementById("tripList");
+    const tripTag = document.getElementById("tripTag");
+
+    let activeTripId = null; // null means "all trips"
+
+    function getTrip(tripId) {
+      return trips.find((t) => t.id === tripId) || null;
+    }
+
+    function getFilteredLocations() {
+      if (!activeTripId) return locations;
+      return locations.filter((l) => l.tripId === activeTripId);
+    }
 
     function showLocationInfo(location) {
       locationName.textContent = location.name;
       locationDescription.textContent = location.description;
+      const trip = getTrip(location.tripId);
+      tripTag.textContent = trip ? `${trip.title}・${trip.dateRange}` : "這一刻的回憶";
     }
 
     function focusLocation(location) {
@@ -213,13 +300,61 @@
       );
     }
 
-    function createLocationButtons() {
-      locations.forEach((location) => {
+    function renderLocationButtons() {
+      locationList.innerHTML = "";
+      getFilteredLocations().forEach((location) => {
         const button = document.createElement("button");
         button.className = "location-button";
         button.textContent = location.name;
         button.addEventListener("click", () => focusLocation(location));
         locationList.appendChild(button);
+      });
+    }
+
+    function applyTripFilter(tripId) {
+      activeTripId = tripId;
+
+      // Update globe points
+      globe.pointsData(getFilteredLocations());
+
+      // Update location buttons
+      renderLocationButtons();
+
+      // Update trip button styles
+      tripListEl.querySelectorAll(".trip-button").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tripId === (tripId === null ? "" : tripId));
+      });
+
+      // Reset detail card
+      const filtered = getFilteredLocations();
+      if (filtered.length > 0) {
+        showLocationInfo(filtered[0]);
+        globe.pointOfView({ lat: filtered[0].lat, lng: filtered[0].lng, altitude: 2.3 }, 1000);
+      } else {
+        locationName.textContent = "點一個地方，想起那時的我們";
+        locationDescription.textContent = "點一下地圖，看看我們當時的故事。";
+        tripTag.textContent = "這一刻的回憶";
+      }
+    }
+
+    function createTripButtons() {
+      // "All" button
+      const allBtn = document.createElement("button");
+      allBtn.className = "trip-button active";
+      allBtn.textContent = "全部旅程";
+      allBtn.dataset.tripId = "";
+      allBtn.addEventListener("click", () => applyTripFilter(null));
+      tripListEl.appendChild(allBtn);
+
+      // Per-trip buttons
+      trips.forEach((trip) => {
+        const btn = document.createElement("button");
+        btn.className = "trip-button";
+        btn.textContent = trip.title;
+        btn.dataset.tripId = trip.id;
+        btn.title = `${trip.dateRange} — ${trip.description}`;
+        btn.addEventListener("click", () => applyTripFilter(trip.id));
+        tripListEl.appendChild(btn);
       });
     }
 
@@ -253,7 +388,8 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
 
-    createLocationButtons();
+    createTripButtons();
+    renderLocationButtons();
     showLocationInfo(locations[0]);
 
     window.addEventListener("resize", () => {
