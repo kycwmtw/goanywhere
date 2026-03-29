@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的旅行地球儀</title>
+  <title>我們走過的地方</title>
   <style>
     :root {
       --bg-1: #030712;
@@ -150,23 +150,19 @@
   <div id="globeViz"></div>
 
   <aside class="overlay">
-    <p class="eyebrow">私人旅行地圖</p>
-    <h1>那些我想記住的地方</h1>
+    <p class="eyebrow">屬於我們的旅行記憶</p>
+    <h1>那些我們一起走過的地方</h1>
     <p class="intro">
-      拖曳地球儀探索世界。將游標移至標記點可看到提示，點擊標記點便能聚焦，並在此顯示詳細資訊。
+      轉動地球，找找我們曾留下足跡的角落。移到標記點可以看到提示，點一下就能重回那段時光。
     </p>
 
     <section class="card">
-      <p class="card-label">選取的地點</p>
-      <h2 id="locationName">選擇一個地方</h2>
-      <p id="locationDescription">點擊地球儀上的標記點，即可顯示該地點的描述。</p>
+      <p class="card-label">這一刻的回憶</p>
+      <h2 id="locationName">點一個地方，想起那時的我們</h2>
+      <p id="locationDescription">點一下地圖，看看我們當時的故事。</p>
     </section>
 
     <div id="locationList" class="location-list"></div>
-
-    <p class="hint">
-      編輯下方 JavaScript 中的 <code>locations</code> 陣列，即可新增、刪除或修改地點。
-    </p>
   </aside>
 
   <script>
