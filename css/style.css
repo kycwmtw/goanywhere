@@ -1,0 +1,138 @@
+:root {
+  --bg-1: #030712;
+  --bg-2: #08101d;
+  --panel: rgba(10, 16, 28, 0.86);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #f5f7fb;
+  --muted: #9fb0c9;
+  --accent: #ff9f43;
+  --accent-soft: rgba(255, 159, 67, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(57, 91, 160, 0.2), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(255, 159, 67, 0.08), transparent 22%),
+    linear-gradient(180deg, var(--bg-2), var(--bg-1));
+  color: var(--text);
+}
+
+#globeViz {
+  width: 100vw;
+  height: 100vh;
+}
+
+.overlay {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: min(340px, calc(100vw - 40px));
+  padding: 18px;
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  z-index: 10;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.intro {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.card {
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-label {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.location-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.location-button {
+  border: 1px solid rgba(255, 159, 67, 0.24);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: var(--accent-soft);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.location-button:hover {
+  background: rgba(255, 159, 67, 0.28);
+  transform: translateY(-1px);
+}
+
+.hint {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .overlay {
+    top: auto;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+}

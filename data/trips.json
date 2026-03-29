@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Vienna, Austria",
+    "lat": 48.2082,
+    "lng": 16.3738,
+    "description": "A winter trip for music, cafes, and New Year lights."
+  },
+  {
+    "name": "Bangkok, Thailand",
+    "lat": 13.7563,
+    "lng": 100.5018,
+    "description": "A favorite stop for night markets, temples, and street food."
+  },
+  {
+    "name": "Reykjavik, Iceland",
+    "lat": 64.1466,
+    "lng": -21.9426,
+    "description": "A dream destination for cold air, lava landscapes, and northern lights."
+  },
+  {
+    "name": "Kyoto, Japan",
+    "lat": 35.0116,
+    "lng": 135.7681,
+    "description": "A peaceful city with shrines, gardens, and beautiful seasonal colors."
+  }
+]
