@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Travel Globe</title>
+  <title>我的旅行地球儀</title>
   <style>
     :root {
       --bg-1: #030712;
@@ -25,7 +25,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+      font-family: "Avenir Next", "Trebuchet MS", "PingFang TC", "Microsoft JhengHei", sans-serif;
       background:
         radial-gradient(circle at top left, rgba(57, 91, 160, 0.2), transparent 28%),
         radial-gradient(circle at bottom right, rgba(255, 159, 67, 0.08), transparent 22%),
@@ -150,22 +150,22 @@
   <div id="globeViz"></div>
 
   <aside class="overlay">
-    <p class="eyebrow">Personal Travel Map</p>
-    <h1>Places I Want to Remember</h1>
+    <p class="eyebrow">私人旅行地圖</p>
+    <h1>那些我想記住的地方</h1>
     <p class="intro">
-      Drag to explore the globe. Hover a point to see a quick tooltip, or click a point to focus it and show details here.
+      拖曳地球儀探索世界。將游標移至標記點可看到提示，點擊標記點便能聚焦，並在此顯示詳細資訊。
     </p>
 
     <section class="card">
-      <p class="card-label">Selected Location</p>
-      <h2 id="locationName">Choose a place</h2>
-      <p id="locationDescription">Click a point on the globe to show its description.</p>
+      <p class="card-label">選取的地點</p>
+      <h2 id="locationName">選擇一個地方</h2>
+      <p id="locationDescription">點擊地球儀上的標記點，即可顯示該地點的描述。</p>
     </section>
 
     <div id="locationList" class="location-list"></div>
 
     <p class="hint">
-      Edit the <code>locations</code> array in the JavaScript below to add, remove, or update places later.
+      編輯下方 JavaScript 中的 <code>locations</code> 陣列，即可新增、刪除或修改地點。
     </p>
   </aside>
 
@@ -174,28 +174,28 @@
     // Add more places by copying one object and changing the values.
     const locations = [
       {
-        name: "Vienna, Austria",
+        name: "奧地利・維也納",
         lat: 48.2082,
         lng: 16.3738,
-        description: "A winter trip for music, cafes, and New Year lights."
+        description: "在音樂、咖啡館與跨年燈火中度過的冬日旅程。"
       },
       {
-        name: "Bangkok, Thailand",
+        name: "泰國・曼谷",
         lat: 13.7563,
         lng: 100.5018,
-        description: "A favorite stop for night markets, temples, and street food."
+        description: "最愛的停留之地，有夜市、寺廟與滿街的美食香氣。"
       },
       {
-        name: "Reykjavik, Iceland",
+        name: "冰島・雷克雅維克",
         lat: 64.1466,
         lng: -21.9426,
-        description: "A dream destination for cold air, lava landscapes, and northern lights."
+        description: "夢想中的目的地，冷冽空氣、熔岩地景與神秘的極光。"
       },
       {
-        name: "Kyoto, Japan",
+        name: "日本・京都",
         lat: 35.0116,
         lng: 135.7681,
-        description: "A peaceful city with shrines, gardens, and beautiful seasonal colors."
+        description: "一座寧靜的城市，有神社、庭園與美麗的四季色彩。"
       }
     ];
 
