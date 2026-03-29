@@ -43,6 +43,8 @@
       top: 20px;
       left: 20px;
       width: min(340px, calc(100vw - 40px));
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
       padding: 18px;
       border: 1px solid var(--panel-border);
       border-radius: 18px;
@@ -144,8 +146,8 @@
 
     .trip-list {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      flex-direction: column;
+      gap: 0;
     }
 
     .trip-button {
@@ -175,6 +177,28 @@
       margin: 4px 0 0;
       color: var(--muted);
       font-size: 12px;
+    }
+
+    .year-group {
+      width: 100%;
+      margin-bottom: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .year-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 8px 0 4px;
+    }
+
+    .year-label:first-child {
+      margin-top: 0;
     }
 
     @media (max-width: 700px) {
@@ -221,49 +245,155 @@
     // Trips data – each trip groups related locations together.
     const trips = [
       {
-        id: "europe-winter",
-        title: "歐洲冬日之旅",
-        dateRange: "2023.12 – 2024.01",
-        description: "在冰雪與音樂之間，感受歐洲的冬日魔法。"
+        id: "tokyo-2022",
+        title: "東京之旅",
+        dateRange: "2022.12.31 – 2023.01.05",
+        year: 2022,
+        description: "跨年東京之旅"
       },
       {
-        id: "asia-spring",
-        title: "亞洲春日漫遊",
-        dateRange: "2024.03",
-        description: "穿梭於寺廟與街巷，品嚐亞洲的春日氣息。"
+        id: "beijing-2024",
+        title: "北京之旅",
+        dateRange: "2024.08.01 – 2024.08.05",
+        year: 2024,
+        description: "北京夏日之旅"
+      },
+      {
+        id: "shanghai-2024",
+        title: "上海之旅",
+        dateRange: "2024.11.30 – 2024.12.03",
+        year: 2024,
+        description: "上海冬日之旅"
+      },
+      {
+        id: "europe-winter-2024",
+        title: "歐洲冬日之旅",
+        dateRange: "2024.12.29 – 2025.01.07",
+        year: 2024,
+        description: "布達佩斯、維也納、慕尼黑、薩爾茲堡"
+      },
+      {
+        id: "middle-east-2025",
+        title: "中東之旅",
+        dateRange: "2025.05.27 – 2025.06.08",
+        year: 2025,
+        description: "杜拜、阿布達比、馬斯喀特、尼茲瓦"
+      },
+      {
+        id: "shanghai-2026",
+        title: "上海新年之旅",
+        dateRange: "2026.01.01 – 2026.01.03",
+        year: 2026,
+        description: "上海新年之旅"
+      },
+      {
+        id: "hk-shenzhen-2026",
+        title: "香港・深圳之旅",
+        dateRange: "2026.03.07 – 2026.03.09",
+        year: 2026,
+        description: "香港與深圳之旅"
       }
     ];
 
-    // Edit this array to manage your travel locations.
-    // Add more places by copying one object and changing the values.
+    // Real travel location data.
     const locations = [
+      {
+        name: "日本・東京",
+        lat: 35.6762,
+        lng: 139.6503,
+        description: "跨年夜的煙火與新年的寧靜，東京的兩種面貌。",
+        tripId: "tokyo-2022"
+      },
+      {
+        name: "中國・北京",
+        lat: 39.9042,
+        lng: 116.4074,
+        description: "故宮、胡同與夏日的蟬鳴，北京深厚的歷史氣息。",
+        tripId: "beijing-2024"
+      },
+      {
+        name: "中國・上海",
+        lat: 31.2304,
+        lng: 121.4737,
+        description: "外灘夜景、石庫門弄堂，外灘的光與影。",
+        tripId: "shanghai-2024"
+      },
+      {
+        name: "匈牙利・布達佩斯",
+        lat: 47.4979,
+        lng: 19.0402,
+        description: "多瑙河畔的燈火，歐洲最美的夜景之一。",
+        tripId: "europe-winter-2024"
+      },
       {
         name: "奧地利・維也納",
         lat: 48.2082,
         lng: 16.3738,
         description: "在音樂、咖啡館與跨年燈火中度過的冬日旅程。",
-        tripId: "europe-winter"
+        tripId: "europe-winter-2024"
       },
       {
-        name: "泰國・曼谷",
-        lat: 13.7563,
-        lng: 100.5018,
-        description: "最愛的停留之地，有夜市、寺廟與滿街的美食香氣。",
-        tripId: "asia-spring"
+        name: "德國・慕尼黑",
+        lat: 48.1351,
+        lng: 11.5820,
+        description: "冬日的瑪麗恩廣場與節日市集。",
+        tripId: "europe-winter-2024"
       },
       {
-        name: "冰島・雷克雅維克",
-        lat: 64.1466,
-        lng: -21.9426,
-        description: "夢想中的目的地，冷冽空氣、熔岩地景與神秘的極光。",
-        tripId: "europe-winter"
+        name: "奧地利・薩爾茲堡",
+        lat: 47.8095,
+        lng: 13.0550,
+        description: "莫札特的故鄉，被雪覆蓋的古城輪廓。",
+        tripId: "europe-winter-2024"
       },
       {
-        name: "日本・京都",
-        lat: 35.0116,
-        lng: 135.7681,
-        description: "一座寧靜的城市，有神社、庭園與美麗的四季色彩。",
-        tripId: "asia-spring"
+        name: "阿聯酋・杜拜",
+        lat: 25.2048,
+        lng: 55.2708,
+        description: "沙漠中的未來城市，奢華與傳統並存。",
+        tripId: "middle-east-2025"
+      },
+      {
+        name: "阿聯酋・阿布達比",
+        lat: 24.4539,
+        lng: 54.3773,
+        description: "謝赫扎耶德清真寺的白色穹頂在陽光下閃耀。",
+        tripId: "middle-east-2025"
+      },
+      {
+        name: "阿曼・馬斯喀特",
+        lat: 23.5880,
+        lng: 58.3829,
+        description: "阿拉伯海邊的古都，傳統與現代的交匯。",
+        tripId: "middle-east-2025"
+      },
+      {
+        name: "阿曼・尼茲瓦",
+        lat: 22.9340,
+        lng: 57.5306,
+        description: "千年古堡與傳統市集，阿曼的歷史心臟。",
+        tripId: "middle-east-2025"
+      },
+      {
+        name: "中國・上海",
+        lat: 31.2304,
+        lng: 121.4737,
+        description: "新年第一天在外灘迎接2026年的到來。",
+        tripId: "shanghai-2026"
+      },
+      {
+        name: "香港",
+        lat: 22.3193,
+        lng: 114.1694,
+        description: "維多利亞港的夜色，城市的喧囂與活力。",
+        tripId: "hk-shenzhen-2026"
+      },
+      {
+        name: "中國・深圳",
+        lat: 22.5431,
+        lng: 114.0579,
+        description: "科技城市的脈動，與香港一河之隔的未來感。",
+        tripId: "hk-shenzhen-2026"
       }
     ];
 
@@ -346,15 +476,28 @@
       allBtn.addEventListener("click", () => applyTripFilter(null));
       tripListEl.appendChild(allBtn);
 
-      // Per-trip buttons
-      trips.forEach((trip) => {
-        const btn = document.createElement("button");
-        btn.className = "trip-button";
-        btn.textContent = trip.title;
-        btn.dataset.tripId = trip.id;
-        btn.title = `${trip.dateRange} — ${trip.description}`;
-        btn.addEventListener("click", () => applyTripFilter(trip.id));
-        tripListEl.appendChild(btn);
+      // Group trips by year
+      const years = [...new Set(trips.map((t) => t.year))].sort((a, b) => a - b);
+      years.forEach((year) => {
+        const group = document.createElement("div");
+        group.className = "year-group";
+
+        const yearLabel = document.createElement("span");
+        yearLabel.className = "year-label";
+        yearLabel.textContent = year;
+        group.appendChild(yearLabel);
+
+        trips.filter((t) => t.year === year).forEach((trip) => {
+          const btn = document.createElement("button");
+          btn.className = "trip-button";
+          btn.textContent = trip.title;
+          btn.dataset.tripId = trip.id;
+          btn.title = `${trip.dateRange} — ${trip.description}`;
+          btn.addEventListener("click", () => applyTripFilter(trip.id));
+          group.appendChild(btn);
+        });
+
+        tripListEl.appendChild(group);
       });
     }
 
